@@ -1,6 +1,6 @@
 set nocompatible
 filetype off
-  
+
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -10,6 +10,8 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'urbit/hoon.vim'
 Plugin 'sainnhe/everforest'
+Plugin 'https://git.sr.ht/~matthias_schaub/hoon-runes.vim'
+
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -42,6 +44,11 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+"Autocommands
+"
+"  remove trailing whitespace
+autocmd BufWritePre * :%s/\s\+$//e
+
 set bg=dark
 set number
 set hlsearch
@@ -65,8 +72,10 @@ set sessionoptions-=curdir
 set sessionoptions+=sesdir
 
 hi CursorLine cterm=NONE
-hi CursorColumn cterm=NONE 
+hi CursorColumn cterm=NONE
 
+
+" Key Bindings
 " map each number to its shift-key character
 inoremap 1 !
 inoremap 2 @
@@ -89,6 +98,18 @@ inoremap & 7
 inoremap * 8
 inoremap ( 9
 inoremap ) 0
+
+"Remove all trailing whitespace by pressing F5
+nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
+" jj instead of escape key
+inoremap jj <esc>
+" Window adjustment
+nnoremap st :split<CR>
+nnoremap ss :vsplit<CR>
+nnoremap t= :10winc ><CR>
+nnoremap t- :10winc <<CR>
+" map <esc> to return to normal mode from terminal mode
+tnoremap <esc> <C-\><C-n>
 
 " Colorscheme
 " Important!!
