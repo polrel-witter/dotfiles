@@ -7,11 +7,13 @@ call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "call vundle#begin('~/some/path/here')
 
+" set runtime path for fzf and ripgrep integration
+set rtp+=~/.fzf
+set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+
 " let Vundle manage Vundle, required
 Plugin 'urbit/hoon.vim'
-Plugin 'sainnhe/everforest'
 Plugin 'https://git.sr.ht/~matthias_schaub/hoon-runes.vim'
-
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -53,9 +55,7 @@ set bg=dark
 set number
 set hlsearch
 set ruler
-set nowrap
-set cursorline
-set cursorcolumn
+set wrap
 set nobackup
 set shiftwidth=2
 set softtabstop=0
@@ -71,9 +71,14 @@ set sessionoptions-=options
 set sessionoptions-=curdir
 set sessionoptions+=sesdir
 
-hi CursorLine cterm=NONE
-hi CursorColumn cterm=NONE
-
+hi CursorLine cterm=NONE ctermbg=4D436B
+hi CursorColumn cterm=NONE ctermbg=4D436B
+au WinEnter * set cursorline
+au WinEnter * set cursorcolumn
+au WinLeave * set nocursorline
+au WinLeave * set nocursorcolumn
+au InsertEnter * hi CursorLine cterm=underline
+au InsertLeave * hi CursorLine cterm=NONE
 
 " Key Bindings
 " map each number to its shift-key character
@@ -101,28 +106,17 @@ inoremap ) 0
 
 "Remove all trailing whitespace by pressing F5
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
-" jj instead of escape key
-inoremap jj <esc>
+
 " Window adjustment
 nnoremap st :split<CR>
 nnoremap ss :vsplit<CR>
 nnoremap t= :10winc ><CR>
 nnoremap t- :10winc <<CR>
+
+" fuzzy search
+nnoremap <C-f> :FZF ~/dev<CR>
+nnoremap <C-f>d :FZF ~/dev<CR>
+nnoremap <C-f>o :FZF ~/obsidian/main<CR>
+
 " map <esc> to return to normal mode from terminal mode
 tnoremap <esc> <C-\><C-n>
-
-" Colorscheme
-" Important!!
-if has('termguicolors')
-  set termguicolors
-endif
-" For dark version.
-        set background=dark
-" Set contrast.
-" This configuration option should be placed before `colorscheme everforest`.
-" Available values: 'hard', 'medium'(default), 'soft'
-let g:everforest_background = 'hard'
-
-" For better performance
-let g:everforest_better_performance = 1
-colorscheme everforest
