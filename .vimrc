@@ -1,43 +1,51 @@
 set nocompatible
 filetype off
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" Plug, plugin manager init
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
-" set runtime path for fzf and ripgrep integration
-set rtp+=~/.fzf
-set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+call plug#begin('~/.vim/bundle')
+" Plugins
+Plug 'junegunn/vim-plug'                                  " Plugin manager
+Plug 'tpope/vim-sensible'
+Plug 'junegunn/seoul256.vim'
+Plug 'urbit/hoon.vim'                                     " Hoon syntax highlighting
+Plug 'https://git.sr.ht/~matthias_schaub/hoon-runes.vim'  " Hoon rune reference
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'                                   " Fuzzy search
+Plug 'sheerun/vim-polyglot'                               " Multi-language syntax highlighting
+Plug 'majutsushi/tagbar'                                  " Code structure visualization
+Plug 'dense-analysis/ale'                                 " Real-time error checking
 
-" let Vundle manage Vundle, required
-Plugin 'urbit/hoon.vim'
-Plugin 'https://git.sr.ht/~matthias_schaub/hoon-runes.vim'
+call plug#end()
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-" Plugin 'tpope/vim-fugitive'
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-" Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Avoid a name conflict with L9
-" Plugin 'user/L9', {'name': 'newL9'}
+" C programming settings
+syntax on
+filetype plugin indent on
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
+" C specific indentation
+autocmd FileType c setlocal tabstop=4 shiftwidth=4 expandtab
+
+" Tagbar settings
+nmap <C-t> :TagbarToggle<CR>
+
+" ALE settings for C
+let g:ale_linters = {'c': ['gcc', 'clang']}
+let g:ale_c_gcc_options = '-Wall -Wextra -Wpedantic'
+
+" AI config
+" let g:claude_api_key =
+let g:claude_map_implement = "gci"
+let g:claude_map_open_chat = "gcc"
+let g:claude_map_send_chat_message = "g]"
+let g:claude_map_cancel_response = "gcx"
+
 " Brief help
+"
 " :PluginList       - lists configured plugins
 " :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
 " :PluginSearch foo - searches for foo; append `!` to refresh local cache
@@ -46,15 +54,21 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+" set runtime path for fzf and ripgrep integration
+set rtp+=~/.fzf
+set grepprg=rg\ --vimgrep\ --smart-case\ --follow
+
 "Autocommands
 "
 "  remove trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
-set bg=dark
-set number
+"set number
 set hlsearch
-set ruler
+set number
+set relativenumber
+
+"set ruler
 set wrap
 set nobackup
 set shiftwidth=2
@@ -63,7 +77,7 @@ set tabstop=2
 set expandtab
 set incsearch
 set tabpagemax=200
-set history=1000
+set history=10000
 set wildmenu
 set clipboard=unnamedplus
 
@@ -104,7 +118,10 @@ inoremap * 8
 inoremap ( 9
 inoremap ) 0
 
-"Remove all trailing whitespace by pressing F5
+"
+:windo set nodiff
+
+" Remove all trailing whitespace by pressing F5
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " Window adjustment
@@ -113,10 +130,22 @@ nnoremap ss :vsplit<CR>
 nnoremap t= :10winc ><CR>
 nnoremap t- :10winc <<CR>
 
-" fuzzy search
-nnoremap <C-f> :FZF ~/dev<CR>
-nnoremap <C-f>d :FZF ~/dev<CR>
-nnoremap <C-f>o :FZF ~/obsidian/main<CR>
+" Insert mode
+nnoremap a i
+nnoremap ; a
 
-" map <esc> to return to normal mode from terminal mode
+" Line jump
+nnoremap 4 0
+nnoremap 8 $
+
+" Fuzzy directory search shortcuts
+nnoremap ff :FZF ~/<CR>
+nnoremap fg :FZF ~/dev<CR>
+nnoremap fh :FZF ~/dev-vault/.obsidian/plugins<CR>
+nnoremap fn :FZF ~/notes<CR>
+
+" Fuzzy file search shortcuts
+nnoremap <C-d> :Ag <CR>
+
+" Map <esc> to return to normal mode from terminal mode
 tnoremap <esc> <C-\><C-n>
