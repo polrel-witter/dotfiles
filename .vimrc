@@ -18,8 +18,7 @@ Plug 'https://git.sr.ht/~matthias_schaub/hoon-runes.vim'  " Hoon rune reference
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'                                   " Fuzzy search
 Plug 'sheerun/vim-polyglot'                               " Multi-language syntax highlighting
-Plug 'majutsushi/tagbar'                                  " Code structure visualization
-Plug 'dense-analysis/ale'                                 " Real-time error checking
+" Plug 'dense-analysis/ale'                                 " Real-time error checking
 
 call plug#end()
 
@@ -27,18 +26,16 @@ call plug#end()
 syntax on
 filetype plugin indent on
 
-" C specific indentation
-autocmd FileType c setlocal tabstop=4 shiftwidth=4 expandtab
-
-" Tagbar settings
-nmap <C-t> :TagbarToggle<CR>
+" Indentation
+set tabstop=4
+set shiftwidth=4
+set expandtab
 
 " ALE settings for C
 let g:ale_linters = {'c': ['gcc', 'clang']}
 let g:ale_c_gcc_options = '-Wall -Wextra -Wpedantic'
 
 " AI config
-" let g:claude_api_key =
 let g:claude_map_implement = "gci"
 let g:claude_map_open_chat = "gcc"
 let g:claude_map_send_chat_message = "g]"
@@ -54,7 +51,7 @@ let g:claude_map_cancel_response = "gcx"
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-" set runtime path for fzf and ripgrep integration
+" Set runtime path for fzf and ripgrep integration
 set rtp+=~/.fzf
 set grepprg=rg\ --vimgrep\ --smart-case\ --follow
 
@@ -118,8 +115,8 @@ inoremap * 8
 inoremap ( 9
 inoremap ) 0
 
-"
-:windo set nodiff
+" Map <esc> to return to normal mode from terminal mode
+tnoremap <esc> <C-\><C-n>
 
 " Remove all trailing whitespace by pressing F5
 nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
@@ -134,18 +131,8 @@ nnoremap t- :10winc <<CR>
 nnoremap a i
 nnoremap ; a
 
-" Line jump
-nnoremap 4 0
-nnoremap 8 $
-
-" Fuzzy directory search shortcuts
-nnoremap ff :FZF ~/<CR>
-nnoremap fg :FZF ~/dev<CR>
-nnoremap fh :FZF ~/dev-vault/.obsidian/plugins<CR>
-nnoremap fn :FZF ~/notes<CR>
-
-" Fuzzy file search shortcuts
-nnoremap <C-d> :Ag <CR>
-
-" Map <esc> to return to normal mode from terminal mode
-tnoremap <esc> <C-\><C-n>
+"Search
+nnoremap <silent> ff :Files<CR>
+nnoremap <silent> ft :Files /<CR>
+nnoremap <silent> fg :Ag<CR>
+nnoremap <silent> fh :History<CR>
