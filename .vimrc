@@ -10,15 +10,16 @@ endif
 
 call plug#begin('~/.vim/bundle')
 " Plugins
-Plug 'junegunn/vim-plug'                                  " Plugin manager
+Plug 'junegunn/vim-plug'  " Plugin manager
 Plug 'tpope/vim-sensible'
 Plug 'junegunn/seoul256.vim'
-Plug 'urbit/hoon.vim'                                     " Hoon syntax highlighting
+Plug 'urbit/hoon.vim'  " Hoon syntax highlighting
 Plug 'https://git.sr.ht/~matthias_schaub/hoon-runes.vim'  " Hoon rune reference
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'                                   " Fuzzy search
-Plug 'sheerun/vim-polyglot'                               " Multi-language syntax highlighting
-" Plug 'dense-analysis/ale'                                 " Real-time error checking
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }  " Fuzzy search
+Plug 'junegunn/fzf.vim'  " Fuzzy search
+Plug 'sheerun/vim-polyglot'  " Multi-language syntax highlighting
+Plug 'lambdalisue/vim-fern'  " File tree viewer
+" Plug 'dense-analysis/ale'  " Real-time error checking
 
 call plug#end()
 
@@ -35,7 +36,9 @@ set expandtab
 let g:ale_linters = {'c': ['gcc', 'clang']}
 let g:ale_c_gcc_options = '-Wall -Wextra -Wpedantic'
 
-" AI config
+" LLM config
+" Installation instructions: https://github.com/pasky/claude.vim
+let g:claude_api_key = ''
 let g:claude_map_implement = "gci"
 let g:claude_map_open_chat = "gcc"
 let g:claude_map_send_chat_message = "g]"
@@ -55,17 +58,15 @@ let g:claude_map_cancel_response = "gcx"
 set rtp+=~/.fzf
 set grepprg=rg\ --vimgrep\ --smart-case\ --follow
 
-"Autocommands
-"
-"  remove trailing whitespace
+" Remove trailing whitespace
 autocmd BufWritePre * :%s/\s\+$//e
 
-"set number
+" Numbers
 set hlsearch
 set number
 set relativenumber
 
-"set ruler
+" Ruler
 set wrap
 set nobackup
 set shiftwidth=2
@@ -82,6 +83,13 @@ set sessionoptions-=options
 set sessionoptions-=curdir
 set sessionoptions+=sesdir
 
+" Mouse scrolling
+set mouse=a
+set scroll=1
+nnoremap <C-j> 10<C-e>
+nnoremap <C-k> 10<C-y>
+
+" Cursor
 hi CursorLine cterm=NONE ctermbg=4D436B
 hi CursorColumn cterm=NONE ctermbg=4D436B
 au WinEnter * set cursorline
@@ -93,27 +101,27 @@ au InsertLeave * hi CursorLine cterm=NONE
 
 " Key Bindings
 " map each number to its shift-key character
-inoremap 1 !
-inoremap 2 @
-inoremap 3 #
-inoremap 4 $
-inoremap 5 %
-inoremap 6 ^
-inoremap 7 &
-inoremap 8 *
-inoremap 9 (
-inoremap 0 )
+" inoremap 1 !
+" inoremap 2 @
+" inoremap 3 #
+" inoremap 4 $
+" inoremap 5 %
+" inoremap 6 ^
+" inoremap 7 &
+" inoremap 8 *
+" inoremap 9 (
+" inoremap 0 )
 " and then the opposite
-inoremap ! 1
-inoremap @ 2
-inoremap # 3
-inoremap $ 4
-inoremap % 5
-inoremap ^ 6
-inoremap & 7
-inoremap * 8
-inoremap ( 9
-inoremap ) 0
+" inoremap ! 1
+" inoremap @ 2
+" inoremap # 3
+" inoremap $ 4
+" inoremap % 5
+" inoremap ^ 6
+" inoremap & 7
+" inoremap * 8
+" inoremap ( 9
+" inoremap ) 0
 
 " Map <esc> to return to normal mode from terminal mode
 tnoremap <esc> <C-\><C-n>
@@ -127,12 +135,16 @@ nnoremap ss :vsplit<CR>
 nnoremap t= :10winc ><CR>
 nnoremap t- :10winc <<CR>
 
+" Write/Quit
+nnoremap KK :w<CR>
+nnoremap KL :q<CR>
+
 " Insert mode
 nnoremap a i
 nnoremap ; a
 
 "Search
 nnoremap <silent> ff :Files<CR>
-nnoremap <silent> ft :Files /<CR>
-nnoremap <silent> fg :Ag<CR>
+nnoremap <silent> ft :Fern .<CR>
+nnoremap <silent> fg :Rg<CR>
 nnoremap <silent> fh :History<CR>
