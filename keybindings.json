@@ -1,0 +1,53 @@
+// ============================================================================
+//  %APPDATA%\Code\User\keybindings.json
+//  Ctrl+Shift+P -> "Preferences: Open Keyboard Shortcuts (JSON)"
+//
+//  These cover the things Neovim CANNOT bind, because the keystroke never
+//  reaches the embedded Neovim process: terminal focus, panel focus, and
+//  anything that happens while the editor isn't the focused surface.
+// ============================================================================
+[
+  // --- Move between editor groups and terminals, from anywhere -------------
+  // Guarded on neovim.mode so Ctrl+H still means backspace in insert mode.
+  { "key": "ctrl+h", "command": "workbench.action.navigateLeft",
+    "when": "editorTextFocus && neovim.mode == 'normal'" },
+  { "key": "ctrl+l", "command": "workbench.action.navigateRight",
+    "when": "editorTextFocus && neovim.mode == 'normal'" },
+
+  { "key": "ctrl+alt+h", "command": "workbench.action.navigateLeft" },
+  { "key": "ctrl+alt+l", "command": "workbench.action.navigateRight" },
+  { "key": "ctrl+alt+k", "command": "workbench.action.navigateUp" },
+  { "key": "ctrl+alt+j", "command": "workbench.action.navigateDown" },
+
+  // --- Terminal -------------------------------------------------------------
+  { "key": "ctrl+oem_3", "command": "workbench.action.terminal.toggleTerminal" },
+  { "key": "ctrl+alt+enter", "command": "workbench.action.createTerminalEditor" },
+  { "key": "ctrl+alt+5", "command": "workbench.action.terminal.split" },
+  // Escape from a terminal back to the editor, without touching the mouse
+  { "key": "ctrl+alt+e", "command": "workbench.action.focusActiveEditorGroup",
+    "when": "terminalFocus" },
+
+  // --- tmux-style zoom ------------------------------------------------------
+  { "key": "ctrl+alt+z", "command": "workbench.action.toggleMaximizeEditorGroup" },
+
+  // --- Pane sizing when focus isn't in the editor --------------------------
+  { "key": "ctrl+alt+oem_plus",  "command": "workbench.action.increaseViewWidth" },
+  { "key": "ctrl+alt+oem_minus", "command": "workbench.action.decreaseViewWidth" },
+  { "key": "ctrl+alt+0",         "command": "workbench.action.evenEditorWidths" },
+
+  // --- Panel toggles --------------------------------------------------------
+  { "key": "ctrl+alt+b", "command": "workbench.action.toggleSidebarVisibility" },
+  { "key": "ctrl+alt+a", "command": "workbench.action.toggleAuxiliaryBar" },
+
+  // --- Keep Escape doing Neovim things, not VS Code things -----------------
+  // Prevents Escape from being swallowed by suggestion widgets while you're
+  // trying to leave insert mode.
+  { "key": "escape", "command": "vscode-neovim.escape",
+    "when": "editorTextFocus && neovim.init && !dirtyDiffVisible && !markersNavigationVisible && !parameterHintsVisible && !suggestWidgetVisible" },
+
+  // --- Claude Code ----------------------------------------------------------
+  // Ctrl+Esc (focus toggle) and Alt+K (@-mention current selection) ship with
+  // the extension. To bind anything else, open the Keyboard Shortcuts editor
+  // (Ctrl+K Ctrl+S), search "Claude Code", right-click the row you want and
+  // choose "Copy Command ID" — then add it here. Don't guess the IDs.
+]
